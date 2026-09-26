@@ -1,0 +1,12 @@
+# Dataset
+data/raw/
+data/processed/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Experiment outputs
+results/
