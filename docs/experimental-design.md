@@ -284,3 +284,80 @@ Experimental configurations should be separated from source code where practical
 * Exact timing instrumentation
 
 These decisions will be documented before implementation of the corresponding stage.
+
+## Milestone 4 — FP32 Baseline Model
+
+### Objective
+
+Establish a reproducible floating-point baseline for six-class human activity recognition before evaluating model compression and embedded deployment.
+
+### Model architecture
+
+A compact 1D convolutional neural network (CNN) was implemented in TensorFlow/Keras.
+
+* Input shape: `(128, 6)`
+* Convolutional layers: 16 filters and 32 filters, both using kernel size 5
+* Batch normalization and ReLU activations
+* Max pooling after each convolutional block
+* Global average pooling
+* Dense layer with 32 units
+* Six-class softmax output
+
+The model contains 4,534 parameters: 4,438 trainable and 96 non-trainable.
+
+### Data and training protocol
+
+* Dataset: UCI Human Activity Recognition (UCI-HAR)
+* Input: six selected inertial channels, standardized using statistics calculated from training data only
+* Training set: 5,270 windows from 15 subjects
+* Validation set: 2,082 windows from 6 subjects
+* Test set: 2,947 windows from 9 held-out subjects
+* Random seed: 42
+* Optimizer: Adam
+* Loss: sparse categorical cross-entropy
+* Batch size: 64
+* Training epochs: 30
+
+Activity labels were converted from the dataset's 1–6 encoding to zero-based class indices when supplied to the model. The saved dataset labels remain unchanged.
+
+The epoch-30 model was evaluated on the held-out test set. This checkpoint had the lowest validation loss among the 30 recorded epochs. The test set was not used for model selection.
+
+### Baseline results
+
+| Metric                      |        Result |
+| --------------------------- | ------------: |
+| Test accuracy               |        91.31% |
+| Test loss                   |        0.2917 |
+| Parameter count             |         4,534 |
+| Serialized Keras model size | 109,707 bytes |
+
+Per-class F1-scores:
+
+| Activity           | F1-score |
+| ------------------ | -------: |
+| Walking            |     0.95 |
+| Walking upstairs   |     0.93 |
+| Walking downstairs |     0.91 |
+| Sitting            |     0.83 |
+| Standing           |     0.86 |
+| Laying             |     1.00 |
+
+Sitting and standing had the lowest F1-scores, suggesting that distinguishing these relatively stationary activities is a useful area for further investigation. The confusion matrix should be examined to identify the specific misclassification patterns.
+
+### Artifacts
+
+* Model definition: `src/models/build_baseline_model.py`
+* Training script: `src/models/train_baseline.py`
+* Evaluation script: `src/models/evaluate_baseline.py`
+* Model configuration: `configs/baseline_model.json`
+* Training history: `results/baseline/training_history.csv`
+* Test metrics: `results/baseline/test_metrics.json`
+* Confusion matrix: `results/baseline/confusion_matrix.png`
+* Trained checkpoint: `results/baseline/baseline_fp32.keras`
+
+### Interpretation and limitations
+
+This result establishes the initial accuracy and model-size reference for subsequent quantization experiments. The serialized Keras file size is not a measurement of embedded flash or RAM requirements. Inference latency, peak memory use, and real-time behavior have not yet been measured on the STM32 hardware.
+
+Results from later experiments should use the same subject partitions and test protocol to maintain comparability.
+

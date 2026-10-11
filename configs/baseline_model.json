@@ -1,0 +1,64 @@
+{
+  "model_name": "baseline_cnn",
+  "framework": "tensorflow.keras",
+  "precision": "float32",
+  "input_shape": [128, 6],
+  "num_classes": 6,
+  "architecture": [
+    {
+      "layer": "Conv1D",
+      "filters": 16,
+      "kernel_size": 5,
+      "padding": "same"
+    },
+    {
+      "layer": "BatchNormalization"
+    },
+    {
+      "layer": "ReLU"
+    },
+    {
+      "layer": "MaxPooling1D",
+      "pool_size": 2
+    },
+    {
+      "layer": "Conv1D",
+      "filters": 32,
+      "kernel_size": 5,
+      "padding": "same"
+    },
+    {
+      "layer": "BatchNormalization"
+    },
+    {
+      "layer": "ReLU"
+    },
+    {
+      "layer": "MaxPooling1D",
+      "pool_size": 2
+    },
+    {
+      "layer": "GlobalAveragePooling1D"
+    },
+    {
+      "layer": "Dense",
+      "units": 32
+    },
+    {
+      "layer": "ReLU"
+    },
+    {
+      "layer": "Dense",
+      "units": 6,
+      "activation": "softmax"
+    }
+  ],
+  "optimizer": "adam",
+  "loss": "sparse_categorical_crossentropy",
+  "metrics": ["accuracy"],
+  "parameter_count": {
+    "total": 4534,
+    "trainable": 4438,
+    "non_trainable": 96
+  }
+}
