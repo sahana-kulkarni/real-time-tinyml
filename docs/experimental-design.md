@@ -361,3 +361,38 @@ This result establishes the initial accuracy and model-size reference for subseq
 
 Results from later experiments should use the same subject partitions and test protocol to maintain comparability.
 
+
+## Milestone 5.2 — FP32 TensorFlow Lite Conversion
+
+### Objective
+
+Convert the trained FP32 Keras baseline to TensorFlow Lite and verify that conversion preserves its predictions.
+
+### Results
+
+| Metric                                 |        Result |
+| -------------------------------------- | ------------: |
+| Keras model file size                  | 109,707 bytes |
+| FP32 TensorFlow Lite file size         |  23,772 bytes |
+| Serialized file-size reduction         |        78.33% |
+| Samples compared                       |           100 |
+| Maximum absolute prediction difference |    0.00000024 |
+| Mean absolute prediction difference    |    0.00000001 |
+| Predicted-class agreement              |          100% |
+
+Both model inputs and outputs use float32. Prediction comparisons were performed on the first 100 examples of the held-out test partition.
+
+### Interpretation
+
+The TensorFlow Lite model closely reproduced the Keras model's predictions for the sampled inputs. The serialized TensorFlow Lite file was approximately 4.6 times smaller than the Keras file.
+
+This reduction is attributable to the difference between model serialization formats and must not be interpreted as an INT8 quantization gain. The measurements do not establish embedded flash usage, peak RAM consumption, or inference latency on the STM32F446RE.
+
+### Artifacts
+
+* Conversion script: `src/models/export_tflite_baseline.py`
+* Converted model: `results/quantization/baseline_fp32.tflite`
+* Conversion report: `results/quantization/baseline_fp32_conversion.json`
+
+This converted FP32 model will serve as the TensorFlow Lite reference for subsequent quantization experiments.
+

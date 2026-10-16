@@ -1,0 +1,21 @@
+{
+  "model_type": "FP32 TensorFlow Lite",
+  "source_model": "results/baseline/baseline_fp32.keras",
+  "test_samples_compared": 100,
+  "keras_model_size_bytes": 109707,
+  "tflite_model_size_bytes": 23772,
+  "tflite_input_shape": [
+    1,
+    128,
+    6
+  ],
+  "tflite_input_dtype": "<class 'numpy.float32'>",
+  "tflite_output_shape": [
+    1,
+    6
+  ],
+  "tflite_output_dtype": "<class 'numpy.float32'>",
+  "max_absolute_prediction_difference": 2.384185791015625e-07,
+  "mean_absolute_prediction_difference": 9.473669848603095e-09,
+  "predicted_class_agreement": 1.0
+}
